@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Дом Спанч Боба</title>
+    <style>
+      /* Основные стили */
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url("fon.png") no-repeat center center fixed;
+        background-size: cover;
+        font-family: Arial, sans-serif;
+        overflow: hidden;
+      }
+
+      /* Полупрозрачная панель сверху */
+      .panel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
+        padding: 10px 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .panel h1 {
+        margin: 0;
+        color: #ffeb3b; /* Желтый неоновый текст */
+        font-size: 32px;
+        text-shadow: 0 0 10px #ffeb3b, 0 0 20px #ffeb3b, 0 0 40px #ffeb3b;
+        font-family: "Arial", sans-serif;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      /* Панель слева */
+      .left-panel {
+        position: fixed;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
+        padding: 20px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .left-panel img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .left-panel span {
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      /* Круглая фотка дома Спанч Боба */
+      .spongebob-house {
+        width: 300px; /* Размер круга */
+        height: 300px;
+        border-radius: 50%; /* Делаем круг */
+        background: #ffeb3b; /* Желтый неоновый фон */
+        box-shadow: 0 0 20px #ffeb3b, 0 0 40px #ffeb3b, 0 0 60px #ffeb3b; /* Неоновый эффект */
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      /* Фотка внутри круга */
+      .spongebob-house img {
+        width: 80%; /* Уменьшили фотку */
+        height: 80%;
+        border-radius: 50%;
+        object-fit: cover;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      /* Анимация при клике */
+      .spongebob-house:active {
+        transform: scale(0.95); /* Уменьшаем при клике */
+        box-shadow: 0 0 10px #ffeb3b, 0 0 20px #ffeb3b, 0 0 30px #ffeb3b; /* Меньше свечения */
+      }
+
+      /* Стили для рандомных фоток */
+      .crasty {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        image-rendering: crisp-edges; /* Четкие фотки */
+        animation: appear 1s ease-out forwards;
+      }
+
+      /* Анимация появления */
+      @keyframes appear {
+        0% {
+          opacity: 0;
+          transform: scale(0);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0);
+        }
+      }
+
+      /* Стили для текста +1 */
+      .money-text {
+        position: absolute;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        animation: floatUp 1s ease-out forwards;
+      }
+
+      /* Анимация текста +1 */
+      @keyframes floatUp {
+        0% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Полупрозрачная панель сверху -->
+    <div class="panel">
+      <h1>Spanch Bob</h1>
+    </div>
+
+    <!-- Панель слева -->
+    <div class="left-panel">
+      <img src="crasty.png" alt="Crasty" />
+      <span id="money">0</span>
+    </div>
+
+    <!-- Круглая фотка дома Спанч Боба -->
+    <div class="spongebob-house">
+      <img src="sp.png" alt="Дом Спанч Боба" />
+    </div>
+
+    <!-- Аудио -->
+    <audio autoplay loop controls style="display: none">
+      <source src="sdd.mp3" type="audio/mpeg" />
+      <source src="sdd.ogg" type="audio/ogg" />
+      Ваш браузер не поддерживает аудио.
+    </audio>
+
+    <script>
+      // Переменные
+      let money = 0;
+      const moneyElement = document.getElementById("money");
+
+      // Автовоспроизведение музыки для всех браузеров
+      document.addEventListener(
+        "click",
+        () => {
+          const audio = document.querySelector("audio");
+          audio.play();
+        },
+        { once: true }
+      ); // Срабатывает только один раз
+
+      // Функция для создания одной фотки
+      function createCrasty() {
+        const crasty = document.createElement("img");
+        crasty.src = "crasty.png"; // Путь к фотке
+        crasty.classList.add("crasty");
+
+        // Рандомная позиция рядом с кругом или на нем
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = Math.random() * 150; // Расстояние от круга
+        const x = Math.cos(angle) * distance;
+        const y = Math.sin(angle) * distance;
+
+        crasty.style.left = `${x + window.innerWidth / 2}px`;
+        crasty.style.top = `${y + window.innerHeight / 2}px`;
+
+        document.body.appendChild(crasty);
+
+        // Удаляем фотку через 1 секунду
+        setTimeout(() => crasty.remove(), 1000);
+
+        // Создаем текст +1
+        const moneyText = document.createElement("div");
+        moneyText.classList.add("money-text");
+        moneyText.textContent = "+1";
+        moneyText.style.left = `${x + window.innerWidth / 2}px`;
+        moneyText.style.top = `${y + window.innerHeight / 2}px`;
+
+        document.body.appendChild(moneyText);
+
+        // Удаляем текст через 1 секунду
+        setTimeout(() => moneyText.remove(), 1000);
+      }
+
+      // Обработчик клика на круг
+      const circle = document.querySelector(".spongebob-house");
+      circle.addEventListener("click", () => {
+        money += 1; // Увеличиваем счетчик денег
+        moneyElement.textContent = money; // Обновляем счетчик
+        createCrasty(); // Создаем одну фотку при каждом клике
+      });
+    </script>
+  </body>
+</html>
