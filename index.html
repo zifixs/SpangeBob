@@ -47,23 +47,71 @@
         font-family: "Arial", sans-serif;
         font-weight: bold;
         text-transform: uppercase;
+        text-align: center; /* Выравниваем текст по центру */
       }
 
-      /* Панель слева */
-      .left-panel {
+      /* Панель с энергией (слева вверху, напротив панели с деньгами) */
+      .energy-panel {
         position: fixed;
-        left: 10px; /* Уменьшенный отступ для мобильных */
-        top: 50%;
-        transform: translateY(-50%);
+        left: 10px; /* Смещаем влево */
+        top: 70px; /* Опускаем ниже */
         background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
-        padding: 10px; /* Уменьшенный padding */
+        padding: 10px;
         border-radius: 10px;
         display: flex;
         align-items: center;
-        gap: 5px; /* Уменьшенный gap */
+        gap: 10px;
+        z-index: 1000;
       }
 
-      .left-panel img {
+      .energy-panel img {
+        width: 40px; /* Увеличенный размер изображения */
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        transition: transform 0.3s ease; /* Анимация для изображения */
+      }
+
+      /* Анимация при трате энергии */
+      @keyframes energyShake {
+        0% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        50% {
+          transform: translateX(5px);
+        }
+        75% {
+          transform: translateX(-5px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      .energy-panel span {
+        color: white;
+        font-size: 18px; /* Уменьшенный размер текста */
+        font-weight: bold;
+      }
+
+      /* Панель с деньгами (справа вверху, но ниже) */
+      .money-panel {
+        position: fixed;
+        right: 10px; /* Смещаем вправо */
+        top: 70px; /* Опускаем ниже */
+        background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
+        padding: 10px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        z-index: 1000;
+      }
+
+      .money-panel img {
         width: 30px; /* Уменьшенный размер изображения */
         height: 30px;
         border-radius: 50%;
@@ -84,7 +132,7 @@
         }
       }
 
-      .left-panel span {
+      .money-panel span {
         color: white;
         font-size: 18px; /* Уменьшенный размер текста */
         font-weight: bold;
@@ -152,7 +200,7 @@
         }
       }
 
-      /* Стили для текста +1 */
+      /* Стили для текста +1 или +5 */
       .money-text {
         position: absolute;
         color: white;
@@ -161,7 +209,7 @@
         animation: floatUp 1s ease-out forwards;
       }
 
-      /* Анимация текста +1 */
+      /* Анимация текста +1 или +5 */
       @keyframes floatUp {
         0% {
           opacity: 1;
@@ -172,16 +220,86 @@
           transform: translateY(-50px);
         }
       }
+
+      /* Нижняя панель с эффектом океана */
+      .ocean-panel {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60px; /* Высота панели */
+        background: linear-gradient(
+          to top,
+          rgba(30, 144, 255, 0.6),
+          rgba(0, 191, 255, 0.6)
+        ); /* Полупрозрачный градиент океана */
+        z-index: 999;
+        overflow: hidden;
+      }
+
+      /* Волны */
+      .wave {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 200%;
+        height: 100%;
+        background: url("wave.png") repeat-x; /* Изображение волны */
+        animation: wave-animation 10s linear infinite;
+      }
+
+      @keyframes wave-animation {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+
+      /* Кастомное уведомление */
+      .notification {
+        position: fixed;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 0, 0, 0.8); /* Красный фон */
+        color: white;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        animation: slideIn 0.5s ease-out forwards;
+        z-index: 2000;
+      }
+
+      /* Анимация появления уведомления */
+      @keyframes slideIn {
+        0% {
+          opacity: 0;
+          transform: translateX(100%) translateY(-50%);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0) translateY(-50%);
+        }
+      }
     </style>
   </head>
   <body>
     <!-- Полупрозрачная панель сверху -->
     <div class="panel">
-      <h1>Spanch Bob</h1>
+      <h1>Spange Bob</h1> <!-- Изменено на "Spange" -->
     </div>
 
-    <!-- Панель слева -->
-    <div class="left-panel">
+    <!-- Панель с энергией (слева вверху, напротив панели с деньгами) -->
+    <div class="energy-panel">
+      <img src="energy.png" alt="Energy" id="energy-img" />
+      <span id="energy">500/500</span>
+    </div>
+
+    <!-- Панель с деньгами (справа вверху, но ниже) -->
+    <div class="money-panel">
       <img src="crasty.png" alt="Crasty" id="crasty-img" />
       <span id="money">0</span>
     </div>
@@ -191,8 +309,13 @@
       <img src="sp.png" alt="Дом Спанч Боба" />
     </div>
 
-    <!-- Аудио -->
-    <audio autoplay loop controls style="display: none">
+    <!-- Нижняя панель с эффектом океана -->
+    <div class="ocean-panel">
+      <div class="wave"></div>
+    </div>
+
+    <!-- Аудио для основной страницы -->
+    <audio id="main-audio" autoplay loop style="display: none" volume="0.3">
       <source src="sdd.mp3" type="audio/mpeg" />
       <source src="sdd.ogg" type="audio/ogg" />
       Ваш браузер не поддерживает аудио.
@@ -201,24 +324,28 @@
     <script>
       // Переменные
       let money = parseInt(localStorage.getItem("money")) || 0; // Загружаем сохраненные деньги
+      let energy = 500; // Начальная энергия
+      const energyElement = document.getElementById("energy");
       const moneyElement = document.getElementById("money");
       const crastyImg = document.getElementById("crasty-img");
+      const energyImg = document.getElementById("energy-img");
+      const circle = document.querySelector(".spongebob-house");
+      const mainAudio = document.getElementById("main-audio");
 
-      // Обновляем счетчик при загрузке страницы
+      // Обновляем счетчики при загрузке страницы
+      energyElement.textContent = `${energy}/500`;
       moneyElement.textContent = money;
 
-      // Автовоспроизведение музыки для всех браузеров
-      document.addEventListener(
-        "click",
-        () => {
-          const audio = document.querySelector("audio");
-          audio.play();
-        },
-        { once: true }
-      ); // Срабатывает только один раз
+      // Восстанавливаем энергию каждую секунду
+      setInterval(() => {
+        if (energy < 500) {
+          energy += 1;
+          energyElement.textContent = `${energy}/500`;
+        }
+      }, 1000);
 
       // Функция для создания одной фотки
-      function createCrasty() {
+      function createCrasty(amount) {
         const crasty = document.createElement("img");
         crasty.src = "crasty.png"; // Путь к фотке
         crasty.classList.add("crasty");
@@ -237,10 +364,10 @@
         // Удаляем фотку через 1 секунду
         setTimeout(() => crasty.remove(), 1000);
 
-        // Создаем текст +1
+        // Создаем текст +1 или +5
         const moneyText = document.createElement("div");
         moneyText.classList.add("money-text");
-        moneyText.textContent = "+1";
+        moneyText.textContent = `+${amount}`;
         moneyText.style.left = `${x + window.innerWidth / 2}px`;
         moneyText.style.top = `${y + window.innerHeight / 2}px`;
 
@@ -250,10 +377,35 @@
         setTimeout(() => moneyText.remove(), 1000);
       }
 
+      // Функция для показа уведомления
+      function showNotification(message) {
+        const notification = document.createElement("div");
+        notification.classList.add("notification");
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        // Удаляем уведомление через 2 секунды
+        setTimeout(() => notification.remove(), 2000);
+      }
+
       // Обработчик клика на круг
-      const circle = document.querySelector(".spongebob-house");
       circle.addEventListener("click", () => {
-        money += 1; // Увеличиваем счетчик денег
+        if (energy <= 0) {
+          showNotification("No energy, please wait!");
+          return;
+        }
+
+        energy -= 4; // Уменьшаем энергию на 4
+        if (energy < 0) energy = 0; // Не даем энергии уйти в минус
+        energyElement.textContent = `${energy}/500`;
+
+        // Анимация для фотки энергии
+        energyImg.style.animation = "energyShake 0.3s ease";
+        setTimeout(() => (energyImg.style.animation = ""), 300); // Сбрасываем анимацию
+
+        const random = Math.random(); // Случайное число от 0 до 1
+        const amount = random < 0.1 ? 5 : 1; // 10% шанс получить +5, иначе +1
+        money += amount; // Увеличиваем счетчик денег
         moneyElement.textContent = money; // Обновляем счетчик
         localStorage.setItem("money", money); // Сохраняем деньги
 
@@ -261,7 +413,12 @@
         crastyImg.style.animation = "jump 0.3s ease";
         setTimeout(() => (crastyImg.style.animation = ""), 300); // Сбрасываем анимацию
 
-        createCrasty(); // Создаем одну фотку при каждом клике
+        createCrasty(amount); // Создаем одну фотку при каждом клике
+      });
+
+      // Автовоспроизведение музыки
+      document.addEventListener("click", () => {
+        mainAudio.play();
       });
     </script>
   </body>
