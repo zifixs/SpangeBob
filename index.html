@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
   <head>
@@ -6,16 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>SpangeBob</title>
     <style>
-      /* Убираем выделения и запрещаем копирование */
+      /* Общие стили */
       * {
-        user-select: none; /* Запрет выделения текста */
-        -webkit-tap-highlight-color: transparent; /* Убираем подсветку при касании на мобильных */
-        -webkit-user-select: none; /* Запрет выделения для Safari */
-        -moz-user-select: none; /* Запрет выделения для Firefox */
-        -ms-user-select: none; /* Запрет выделения для IE/Edge */
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
       }
 
-      /* Запрет контекстного меню */
       body {
         margin: 0;
         height: 100vh;
@@ -34,7 +32,7 @@
         top: 0;
         left: 0;
         width: 100%;
-        background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
+        background: rgba(0, 0, 0, 0.6);
         padding: 10px 20px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         display: flex;
@@ -45,21 +43,21 @@
 
       .panel h1 {
         margin: 0;
-        color: #ffeb3b; /* Желтый неоновый текст */
-        font-size: 24px; /* Уменьшенный размер текста для мобильных */
+        color: #ffeb3b;
+        font-size: 24px;
         text-shadow: 0 0 10px #ffeb3b, 0 0 20px #ffeb3b, 0 0 40px #ffeb3b;
         font-family: "Arial", sans-serif;
         font-weight: bold;
         text-transform: uppercase;
-        text-align: center; /* Выравниваем текст по центру */
+        text-align: center;
       }
 
       /* Кнопка с иконкой rew.png */
       .rew-button {
         position: fixed;
-        top: 70px; /* Чуть ниже верхней панели */
-        left: 10px; /* Слева */
-        background: none; /* Без фона */
+        top: 70px;
+        left: 10px;
+        background: none;
         border: none;
         cursor: pointer;
         padding: 0;
@@ -67,21 +65,21 @@
       }
 
       .rew-button img {
-        width: 40px; /* Размер иконки */
+        width: 40px;
         height: 40px;
-        transition: transform 0.3s ease; /* Анимация при наведении */
+        transition: transform 0.3s ease;
       }
 
       .rew-button:hover img {
-        transform: scale(1.1); /* Увеличение при наведении */
+        transform: scale(1.1);
       }
 
       /* Панель с энергией (справа вверху) */
       .energy-panel {
         position: fixed;
-        right: 10px; /* Смещаем вправо */
-        top: 70px; /* Опускаем ниже */
-        background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
+        right: 10px;
+        top: 70px;
+        background: rgba(0, 0, 0, 0.6);
         padding: 10px;
         border-radius: 10px;
         display: flex;
@@ -91,25 +89,25 @@
       }
 
       .energy-panel img {
-        width: 30px; /* Уменьшенный размер изображения */
+        width: 30px;
         height: 30px;
         border-radius: 50%;
         object-fit: cover;
-        transition: transform 0.2s ease; /* Анимация для изображения */
+        transition: transform 0.2s ease;
       }
 
       .energy-panel span {
         color: white;
-        font-size: 18px; /* Уменьшенный размер текста */
+        font-size: 18px;
         font-weight: bold;
       }
 
       /* Панель с деньгами (справа вверху, но ниже) */
       .money-panel {
         position: fixed;
-        right: 10px; /* Смещаем вправо */
-        top: 130px; /* Опускаем ниже */
-        background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
+        right: 10px;
+        top: 130px;
+        background: rgba(0, 0, 0, 0.6);
         padding: 10px;
         border-radius: 10px;
         display: flex;
@@ -119,25 +117,25 @@
       }
 
       .money-panel img {
-        width: 30px; /* Уменьшенный размер изображения */
+        width: 30px;
         height: 30px;
         border-radius: 50%;
         object-fit: cover;
-        transition: transform 0.2s ease; /* Анимация для изображения */
+        transition: transform 0.2s ease;
       }
 
       .money-panel span {
         color: white;
-        font-size: 18px; /* Уменьшенный размер текста */
+        font-size: 18px;
         font-weight: bold;
       }
 
       /* Панель с уровнем (справа внизу, выше нижней панели) */
       .level-panel {
         position: fixed;
-        right: 10px; /* Смещаем вправо */
-        bottom: 80px; /* Выше нижней панели */
-        background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
+        right: 10px;
+        bottom: 80px;
+        background: rgba(0, 0, 0, 0.6);
         padding: 10px;
         border-radius: 10px;
         display: flex;
@@ -148,32 +146,32 @@
 
       .level-panel span {
         color: white;
-        font-size: 18px; /* Уменьшенный размер текста */
+        font-size: 18px;
         font-weight: bold;
       }
 
       .level-progress {
-        width: 150px; /* Ширина прогресс-бара */
-        height: 10px; /* Высота прогресс-бара */
-        background: rgba(255, 255, 255, 0.3); /* Полупрозрачный фон */
-        border-radius: 5px; /* Закругленные углы */
+        width: 150px;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 5px;
         overflow: hidden;
       }
 
       .level-progress-bar {
         height: 100%;
-        background: #ffeb3b; /* Желтый цвет */
-        width: 0%; /* Начальная ширина */
-        transition: width 0.3s ease; /* Плавное изменение */
+        background: #ffeb3b;
+        width: 0%;
+        transition: width 0.3s ease;
       }
 
       /* Круглая фотка дома Спанч Боба */
       .spongebob-house {
-        width: 200px; /* Уменьшенный размер круга для мобильных */
+        width: 200px;
         height: 200px;
-        border-radius: 50%; /* Делаем круг */
-        background: #ffeb3b; /* Желтый неоновый фон */
-        box-shadow: 0 0 20px #ffeb3b, 0 0 40px #ffeb3b, 0 0 60px #ffeb3b; /* Неоновый эффект */
+        border-radius: 50%;
+        background: #ffeb3b;
+        box-shadow: 0 0 20px #ffeb3b, 0 0 40px #ffeb3b, 0 0 60px #ffeb3b;
         cursor: pointer;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         overflow: hidden;
@@ -181,12 +179,11 @@
         justify-content: center;
         align-items: center;
         position: relative;
-        border: none; /* Убираем обводку */
+        border: none;
       }
 
-      /* Фотка внутри круга */
       .spongebob-house img {
-        width: 80%; /* Уменьшили фотку */
+        width: 80%;
         height: 80%;
         border-radius: 50%;
         object-fit: cover;
@@ -194,27 +191,25 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        pointer-events: none; /* Запрет перетаскивания */
+        pointer-events: none;
       }
 
-      /* Анимация при клике */
       .spongebob-house:active {
-        transform: scale(0.95); /* Уменьшаем при клике */
-        box-shadow: 0 0 10px #ffeb3b, 0 0 20px #ffeb3b, 0 0 30px #ffeb3b; /* Меньше свечения */
+        transform: scale(0.95);
+        box-shadow: 0 0 10px #ffeb3b, 0 0 20px #ffeb3b, 0 0 30px #ffeb3b;
       }
 
       /* Стили для рандомных фоток */
       .crasty {
         position: absolute;
-        width: 30px; /* Уменьшенный размер */
+        width: 30px;
         height: 30px;
         border-radius: 50%;
         object-fit: cover;
-        image-rendering: crisp-edges; /* Четкие фотки */
+        image-rendering: crisp-edges;
         animation: appear 1s ease-out forwards;
       }
 
-      /* Анимация появления */
       @keyframes appear {
         0% {
           opacity: 0;
@@ -234,12 +229,11 @@
       .money-text {
         position: absolute;
         color: white;
-        font-size: 18px; /* Уменьшенный размер текста */
+        font-size: 18px;
         font-weight: bold;
         animation: floatUp 1s ease-out forwards;
       }
 
-      /* Анимация текста +1 или +5 */
       @keyframes floatUp {
         0% {
           opacity: 1;
@@ -263,19 +257,19 @@
       }
 
       .bottom-panel button {
-        width: 50px; /* Квадратные кнопки */
+        width: 50px;
         height: 50px;
         padding: 0;
-        font-size: 0; /* Убираем текст */
-        background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
+        font-size: 0;
+        background: rgba(0, 0, 0, 0.6);
         border: none;
-        border-radius: 15px; /* Закругленные углы */
+        border-radius: 15px;
         cursor: pointer;
         transition: background 0.3s ease;
       }
 
       .bottom-panel button:hover {
-        background: rgba(0, 0, 0, 0.8); /* Темнее при наведении */
+        background: rgba(0, 0, 0, 0.8);
       }
 
       /* Нижняя панель с эффектом океана */
@@ -284,12 +278,12 @@
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 60px; /* Высота панели */
+        height: 60px;
         background: linear-gradient(
           to top,
           rgba(30, 144, 255, 0.6),
           rgba(0, 191, 255, 0.6)
-        ); /* Полупрозрачный градиент океана */
+        );
         z-index: 999;
         overflow: hidden;
       }
@@ -301,7 +295,7 @@
         left: 0;
         width: 200%;
         height: 100%;
-        background: url("wave.png") repeat-x; /* Изображение волны */
+        background: url("wave.png") repeat-x;
         animation: wave-animation 10s linear infinite;
       }
 
@@ -320,7 +314,7 @@
         right: 10px;
         top: 50%;
         transform: translateY(-50%);
-        background: rgba(255, 0, 0, 0.8); /* Красный фон */
+        background: rgba(255, 0, 0, 0.8);
         color: white;
         padding: 10px 20px;
         border-radius: 10px;
@@ -330,7 +324,6 @@
         z-index: 2000;
       }
 
-      /* Анимация появления уведомления */
       @keyframes slideIn {
         0% {
           opacity: 0;
@@ -341,16 +334,98 @@
           transform: translateX(0) translateY(-50%);
         }
       }
+
+      /* Панель с наградами */
+      .reward-panel {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: rgba(0, 0, 0, 0.9);
+        padding: 20px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        z-index: 2000;
+        transition: transform 0.3s ease;
+        width: 90%;
+        max-width: 400px;
+      }
+
+      .reward-panel.active {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .rewards-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        width: 100%;
+      }
+
+      .reward-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+        position: relative;
+      }
+
+      .reward-item img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .reward-item span {
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .reward-item button {
+        background: #ffeb3b;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #000;
+        transition: background 0.3s ease;
+      }
+
+      .reward-item button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+
+      .reward-timer {
+        color: #ffeb3b;
+        font-size: 14px;
+        margin-top: 5px;
+      }
+
+      .reward-item.single {
+        grid-column: 2 / 3;
+        margin-top: 10px;
+      }
     </style>
   </head>
   <body oncontextmenu="return false;">
     <!-- Полупрозрачная панель сверху -->
     <div class="panel">
-      <h1>Spange Bob</h1> <!-- Изменено на "Spange" -->
+      <h1>Spange Bob</h1>
     </div>
 
     <!-- Кнопка с иконкой rew.png -->
-    <button class="rew-button">
+    <button class="rew-button" id="rew-button">
       <img src="rew.png" alt="Rew" />
     </button>
 
@@ -391,6 +466,12 @@
       <div class="wave"></div>
     </div>
 
+    <!-- Панель с наградами -->
+    <div class="reward-panel" id="reward-panel">
+      <h2 style="color: #ffeb3b; text-align: center">Daily Rewards</h2>
+      <div class="rewards-grid" id="rewards-container"></div>
+    </div>
+
     <!-- Аудио для основной страницы -->
     <audio id="main-audio" autoplay loop style="display: none" volume="0.3">
       <source src="sdd.mp3" type="audio/mpeg" />
@@ -400,12 +481,16 @@
 
     <script>
       // Переменные
-      let money = parseInt(localStorage.getItem("money")) || 0; // Загружаем сохраненные деньги
-      let energy = parseInt(localStorage.getItem("energy")) || 500; // Загружаем сохраненную энергию
-      let level = parseInt(localStorage.getItem("level")) || 1; // Загружаем сохраненный уровень
-      let experience = parseInt(localStorage.getItem("experience")) || 0; // Загружаем сохраненный опыт
-      const experienceToNextLevel = 100 + level * 50; // Опыт для следующего уровня увеличивается с уровнем
-      let lastUpdateTime = parseInt(localStorage.getItem("lastUpdateTime")) || Date.now(); // Время последнего обновления энергии
+      let money = parseInt(localStorage.getItem("money")) || 0;
+      let energy = parseInt(localStorage.getItem("energy")) || 500;
+      let level = parseInt(localStorage.getItem("level")) || 1;
+      let experience = parseInt(localStorage.getItem("experience")) || 0;
+      const experienceToNextLevel = 100 + level * 50;
+      let lastUpdateTime = parseInt(localStorage.getItem("lastUpdateTime")) || Date.now();
+      let lastClickTime = 0;
+      let clickCount = 0;
+      let rewards = JSON.parse(localStorage.getItem("rewards")) || Array(10).fill(false);
+      let lastClaimTimes = JSON.parse(localStorage.getItem("lastClaimTimes")) || Array(10).fill(0);
 
       const energyElement = document.getElementById("energy");
       const moneyElement = document.getElementById("money");
@@ -415,11 +500,14 @@
       const energyImg = document.getElementById("energy-img");
       const circle = document.querySelector(".spongebob-house");
       const mainAudio = document.getElementById("main-audio");
+      const rewButton = document.getElementById("rew-button");
+      const rewardPanel = document.getElementById("reward-panel");
+      const rewardsContainer = document.getElementById("rewards-container");
 
       // Восстановление энергии при загрузке страницы
       const currentTime = Date.now();
-      const timeDiff = Math.floor((currentTime - lastUpdateTime) / 1000); // Разница в секундах
-      energy = Math.min(500, energy + timeDiff); // Восстанавливаем энергию
+      const timeDiff = Math.floor((currentTime - lastUpdateTime) / 1000);
+      energy = Math.min(500, energy + timeDiff);
       localStorage.setItem("energy", energy);
       localStorage.setItem("lastUpdateTime", currentTime);
 
@@ -442,12 +530,11 @@
       // Функция для создания одной фотки
       function createCrasty(amount) {
         const crasty = document.createElement("img");
-        crasty.src = "crasty.png"; // Путь к фотке
+        crasty.src = "crasty.png";
         crasty.classList.add("crasty");
 
-        // Рандомная позиция рядом с кругом или на нем
         const angle = Math.random() * 2 * Math.PI;
-        const distance = Math.random() * 100; // Уменьшенное расстояние для мобильных
+        const distance = Math.random() * 100;
         const x = Math.cos(angle) * distance;
         const y = Math.sin(angle) * distance;
 
@@ -456,10 +543,8 @@
 
         document.body.appendChild(crasty);
 
-        // Удаляем фотку через 1 секунду
         setTimeout(() => crasty.remove(), 1000);
 
-        // Создаем текст +1 или +5
         const moneyText = document.createElement("div");
         moneyText.classList.add("money-text");
         moneyText.textContent = `+${amount}`;
@@ -468,7 +553,6 @@
 
         document.body.appendChild(moneyText);
 
-        // Удаляем текст через 1 секунду
         setTimeout(() => moneyText.remove(), 1000);
       }
 
@@ -479,7 +563,6 @@
         notification.textContent = message;
         document.body.appendChild(notification);
 
-        // Удаляем уведомление через 2 секунды
         setTimeout(() => notification.remove(), 2000);
       }
 
@@ -489,39 +572,66 @@
         levelProgressBar.style.width = `${progress}%`;
       }
 
+      // Функция для обнуления прогресса
+      function resetProgress() {
+        money = 0;
+        energy = 500;
+        level = 1;
+        experience = 0;
+        localStorage.setItem("money", money);
+        localStorage.setItem("energy", energy);
+        localStorage.setItem("level", level);
+        localStorage.setItem("experience", experience);
+        energyElement.textContent = `${energy}/500`;
+        moneyElement.textContent = money;
+        levelElement.textContent = `Ур. ${level}`;
+        updateProgressBar();
+        showNotification("You are using an auto-clicker. All progress has been reset.");
+      }
+
       // Обработчик клика на круг
       circle.addEventListener("click", () => {
+        const now = Date.now();
+        if (now - lastClickTime < 100) {
+          clickCount++;
+          if (clickCount > 5) {
+            resetProgress();
+            return;
+          }
+        } else {
+          clickCount = 0;
+        }
+        lastClickTime = now;
+
         if (energy < 4) {
-          showNotification("Недостаточно энергии!");
+          showNotification("Not enough energy!");
           return;
         }
 
-        energy -= 4; // Уменьшаем энергию на 4
+        energy -= 4;
         energyElement.textContent = `${energy}/500`;
         localStorage.setItem("energy", energy);
 
-        const random = Math.random(); // Случайное число от 0 до 1
-        const amount = random < 0.1 ? 5 : 1; // 10% шанс получить +5, иначе +1
-        money += amount; // Увеличиваем счетчик денег
-        moneyElement.textContent = money; // Обновляем счетчик
-        localStorage.setItem("money", money); // Сохраняем деньги
+        const random = Math.random();
+        const amount = random < 0.02 ? 5 : 1; // 2% шанс получить +5
+        money += amount;
+        moneyElement.textContent = money;
+        localStorage.setItem("money", money);
 
-        // Добавляем опыт (чем выше уровень, тем меньше опыта)
         experience += Math.max(1, Math.floor(amount / level));
         if (experience >= experienceToNextLevel) {
           level += 1;
           experience = 0;
           levelElement.textContent = `Ур. ${level}`;
-          localStorage.setItem("level", level); // Сохраняем уровень
+          localStorage.setItem("level", level);
         }
-        localStorage.setItem("experience", experience); // Сохраняем опыт
+        localStorage.setItem("experience", experience);
         updateProgressBar();
 
-        // Анимация подпрыгивания для изображения
         crastyImg.style.animation = "jump 0.3s ease";
-        setTimeout(() => (crastyImg.style.animation = ""), 300); // Сбрасываем анимацию
+        setTimeout(() => (crastyImg.style.animation = ""), 300);
 
-        createCrasty(amount); // Создаем одну фотку при каждом клике
+        createCrasty(amount);
       });
 
       // Автовоспроизведение музыки
@@ -533,6 +643,80 @@
       circle.addEventListener("dblclick", (e) => {
         e.preventDefault();
       });
+
+      // Открытие панели с наградами
+      rewButton.addEventListener("click", () => {
+        rewardPanel.classList.toggle("active");
+        updateRewardsPanel();
+      });
+
+      // Закрытие панели с наградами по клику вне ее
+      document.addEventListener("click", (e) => {
+        if (!rewardPanel.contains(e.target) && !rewButton.contains(e.target)) {
+          rewardPanel.classList.remove("active");
+        }
+      });
+
+      // Обновление панели с наградами
+      function updateRewardsPanel() {
+        rewardsContainer.innerHTML = "";
+        rewards.forEach((claimed, index) => {
+          const rewardItem = document.createElement("div");
+          rewardItem.classList.add("reward-item");
+          if (index === 9) rewardItem.classList.add("single"); // 10-я награда по центру
+
+          const rewardImage = document.createElement("img");
+          rewardImage.src = "crasty.png";
+          rewardItem.appendChild(rewardImage);
+
+          const rewardText = document.createElement("span");
+          rewardText.textContent = `Day ${index + 1}: ${(index + 1) * 1000} money`;
+          rewardItem.appendChild(rewardText);
+
+          const claimButton = document.createElement("button");
+          claimButton.textContent = claimed ? "Claimed" : "Claim";
+          claimButton.disabled = claimed || (index > 0 && !rewards[index - 1]);
+          rewardItem.appendChild(claimButton);
+
+          const timer = document.createElement("div");
+          timer.classList.add("reward-timer");
+          if (claimed) {
+            const nextClaimTime = lastClaimTimes[index] + 24 * 60 * 60 * 1000;
+            const now = Date.now();
+            if (now < nextClaimTime) {
+              const timeLeft = nextClaimTime - now;
+              const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+              const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+              const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+              timer.textContent = `Next reward in: ${hours}h ${minutes}m ${seconds}s`;
+            } else {
+              timer.textContent = "Available";
+            }
+          }
+          rewardItem.appendChild(timer);
+
+          claimButton.addEventListener("click", () => {
+            if (!claimed) {
+              money += (index + 1) * 1000;
+              moneyElement.textContent = money;
+              localStorage.setItem("money", money);
+              rewards[index] = true;
+              lastClaimTimes[index] = Date.now();
+              localStorage.setItem("rewards", JSON.stringify(rewards));
+              localStorage.setItem("lastClaimTimes", JSON.stringify(lastClaimTimes));
+              updateRewardsPanel();
+              if (rewards.every((r) => r)) {
+                rewButton.style.display = "none";
+              }
+            }
+          });
+
+          rewardsContainer.appendChild(rewardItem);
+        });
+      }
+
+      // Инициализация панели с наградами
+      updateRewardsPanel();
     </script>
   </body>
 </html>
