@@ -248,7 +248,7 @@
       /* Нижняя панель с кнопками */
       .bottom-panel {
         position: fixed;
-        bottom: 10px;
+        bottom: 30px; /* Опустили кнопки ниже */
         left: 50%;
         transform: translateX(-50%);
         display: flex;
@@ -266,6 +266,15 @@
         border-radius: 15px;
         cursor: pointer;
         transition: background 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .bottom-panel button img {
+        width: 30px;
+        height: 30px;
+        object-fit: cover;
       }
 
       .bottom-panel button:hover {
@@ -495,9 +504,9 @@
 
     <!-- Нижняя панель с кнопками -->
     <div class="bottom-panel">
-      <button></button>
-      <button></button>
-      <button></button>
+      <button><img src="hom.png" alt="Home" /></button>
+      <button><img src="store.png" alt="Store" /></button>
+      <button><img src="st.png" alt="Settings" /></button>
     </div>
 
     <!-- Нижняя панель с эффектом океана -->
@@ -516,7 +525,7 @@
     </div>
 
     <!-- Аудио для основной страницы -->
-    <audio id="main-audio" autoplay loop style="display: none" volume="0.3">
+    <audio id="main-audio" autoplay loop style="display: none" volume="0.2">
       <source src="sdd.mp3" type="audio/mpeg" />
       <source src="sdd.ogg" type="audio/ogg" />
       Ваш браузер не поддерживает аудио.
@@ -729,7 +738,7 @@
 
           const timer = document.createElement("div");
           timer.classList.add("reward-timer");
-          if (claimed) {
+          if (!claimed) {
             const nextClaimTime = lastClaimTimes[index] + 24 * 60 * 60 * 1000;
             const now = Date.now();
             if (now < nextClaimTime) {
@@ -766,6 +775,11 @@
 
       // Инициализация панели с наградами
       updateRewardsPanel();
+
+      // Обновление таймеров каждую секунду
+      setInterval(() => {
+        updateRewardsPanel();
+      }, 1000);
     </script>
   </body>
 </html>
