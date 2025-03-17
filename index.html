@@ -36,7 +36,7 @@
       .panel h1 {
         margin: 0;
         color: #ffeb3b; /* Желтый неоновый текст */
-        font-size: 32px;
+        font-size: 24px; /* Уменьшенный размер текста для мобильных */
         text-shadow: 0 0 10px #ffeb3b, 0 0 20px #ffeb3b, 0 0 40px #ffeb3b;
         font-family: "Arial", sans-serif;
         font-weight: bold;
@@ -46,34 +46,34 @@
       /* Панель слева */
       .left-panel {
         position: fixed;
-        left: 20px;
+        left: 10px; /* Уменьшенный отступ для мобильных */
         top: 50%;
         transform: translateY(-50%);
         background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
-        padding: 20px;
+        padding: 10px; /* Уменьшенный padding */
         border-radius: 10px;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 5px; /* Уменьшенный gap */
       }
 
       .left-panel img {
-        width: 50px;
-        height: 50px;
+        width: 30px; /* Уменьшенный размер изображения */
+        height: 30px;
         border-radius: 50%;
         object-fit: cover;
       }
 
       .left-panel span {
         color: white;
-        font-size: 24px;
+        font-size: 18px; /* Уменьшенный размер текста */
         font-weight: bold;
       }
 
       /* Круглая фотка дома Спанч Боба */
       .spongebob-house {
-        width: 300px; /* Размер круга */
-        height: 300px;
+        width: 200px; /* Уменьшенный размер круга для мобильных */
+        height: 200px;
         border-radius: 50%; /* Делаем круг */
         background: #ffeb3b; /* Желтый неоновый фон */
         box-shadow: 0 0 20px #ffeb3b, 0 0 40px #ffeb3b, 0 0 60px #ffeb3b; /* Неоновый эффект */
@@ -84,6 +84,7 @@
         justify-content: center;
         align-items: center;
         position: relative;
+        border: none; /* Убираем обводку */
       }
 
       /* Фотка внутри круга */
@@ -107,8 +108,8 @@
       /* Стили для рандомных фоток */
       .crasty {
         position: absolute;
-        width: 50px;
-        height: 50px;
+        width: 30px; /* Уменьшенный размер */
+        height: 30px;
         border-radius: 50%;
         object-fit: cover;
         image-rendering: crisp-edges; /* Четкие фотки */
@@ -135,7 +136,7 @@
       .money-text {
         position: absolute;
         color: white;
-        font-size: 24px;
+        font-size: 18px; /* Уменьшенный размер текста */
         font-weight: bold;
         animation: floatUp 1s ease-out forwards;
       }
@@ -200,7 +201,7 @@
 
         // Рандомная позиция рядом с кругом или на нем
         const angle = Math.random() * 2 * Math.PI;
-        const distance = Math.random() * 150; // Расстояние от круга
+        const distance = Math.random() * 100; // Уменьшенное расстояние для мобильных
         const x = Math.cos(angle) * distance;
         const y = Math.sin(angle) * distance;
 
