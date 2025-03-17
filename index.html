@@ -3,15 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Дом Спанч Боба</title>
+    <title>SpangeBob</title>
     <style>
-      /* Убираем выделения */
+      /* Убираем выделения и запрещаем копирование */
       * {
         user-select: none; /* Запрет выделения текста */
         -webkit-tap-highlight-color: transparent; /* Убираем подсветку при касании на мобильных */
+        -webkit-user-select: none; /* Запрет выделения для Safari */
+        -moz-user-select: none; /* Запрет выделения для Firefox */
+        -ms-user-select: none; /* Запрет выделения для IE/Edge */
       }
 
-      /* Основные стили */
+      /* Запрет контекстного меню */
       body {
         margin: 0;
         height: 100vh;
@@ -138,6 +141,41 @@
         font-weight: bold;
       }
 
+      /* Панель с уровнем (слева вверху, ниже панели с энергией) */
+      .level-panel {
+        position: fixed;
+        left: 10px; /* Смещаем влево */
+        top: 130px; /* Опускаем ниже */
+        background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
+        padding: 10px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        z-index: 1000;
+      }
+
+      .level-panel span {
+        color: white;
+        font-size: 18px; /* Уменьшенный размер текста */
+        font-weight: bold;
+      }
+
+      .level-progress {
+        width: 150px; /* Ширина прогресс-бара */
+        height: 10px; /* Высота прогресс-бара */
+        background: rgba(255, 255, 255, 0.3); /* Полупрозрачный фон */
+        border-radius: 5px; /* Закругленные углы */
+        overflow: hidden;
+      }
+
+      .level-progress-bar {
+        height: 100%;
+        background: #ffeb3b; /* Желтый цвет */
+        width: 0%; /* Начальная ширина */
+        transition: width 0.3s ease; /* Плавное изменение */
+      }
+
       /* Круглая фотка дома Спанч Боба */
       .spongebob-house {
         width: 200px; /* Уменьшенный размер круга для мобильных */
@@ -221,6 +259,32 @@
         }
       }
 
+      /* Нижняя панель с кнопками */
+      .bottom-panel {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+        z-index: 1000;
+      }
+
+      .bottom-panel button {
+        padding: 10px 20px;
+        font-size: 16px;
+        color: white;
+        background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
+        border: none;
+        border-radius: 10px; /* Закругленные углы */
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      .bottom-panel button:hover {
+        background: rgba(0, 0, 0, 0.8); /* Темнее при наведении */
+      }
+
       /* Нижняя панель с эффектом океана */
       .ocean-panel {
         position: fixed;
@@ -286,7 +350,7 @@
       }
     </style>
   </head>
-  <body>
+  <body oncontextmenu="return false;">
     <!-- Полупрозрачная панель сверху -->
     <div class="panel">
       <h1>Spange Bob</h1> <!-- Изменено на "Spange" -->
@@ -304,9 +368,24 @@
       <span id="money">0</span>
     </div>
 
+    <!-- Панель с уровнем (слева вверху, ниже панели с энергией) -->
+    <div class="level-panel">
+      <span id="level">Ур. 1</span>
+      <div class="level-progress">
+        <div class="level-progress-bar" id="level-progress-bar"></div>
+      </div>
+    </div>
+
     <!-- Круглая фотка дома Спанч Боба -->
     <div class="spongebob-house">
       <img src="sp.png" alt="Дом Спанч Боба" />
+    </div>
+
+    <!-- Нижняя панель с кнопками -->
+    <div class="bottom-panel">
+      <button>Кнопка 1</button>
+      <button>Кнопка 2</button>
+      <button>Кнопка 3</button>
     </div>
 
     <!-- Нижняя панель с эффектом океана -->
@@ -325,8 +404,14 @@
       // Переменные
       let money = parseInt(localStorage.getItem("money")) || 0; // Загружаем сохраненные деньги
       let energy = 500; // Начальная энергия
+      let level = 1; // Начальный уровень
+      let experience = 0; // Опыт
+      const experienceToNextLevel = 100; // Опыт для следующего уровня
+
       const energyElement = document.getElementById("energy");
       const moneyElement = document.getElementById("money");
+      const levelElement = document.getElementById("level");
+      const levelProgressBar = document.getElementById("level-progress-bar");
       const crastyImg = document.getElementById("crasty-img");
       const energyImg = document.getElementById("energy-img");
       const circle = document.querySelector(".spongebob-house");
@@ -335,6 +420,8 @@
       // Обновляем счетчики при загрузке страницы
       energyElement.textContent = `${energy}/500`;
       moneyElement.textContent = money;
+      levelElement.textContent = `Ур. ${level}`;
+      updateProgressBar();
 
       // Восстанавливаем энергию каждую секунду
       setInterval(() => {
@@ -388,6 +475,12 @@
         setTimeout(() => notification.remove(), 2000);
       }
 
+      // Функция для обновления прогресс-бара
+      function updateProgressBar() {
+        const progress = (experience / experienceToNextLevel) * 100;
+        levelProgressBar.style.width = `${progress}%`;
+      }
+
       // Обработчик клика на круг
       circle.addEventListener("click", () => {
         if (energy <= 0) {
@@ -408,6 +501,15 @@
         money += amount; // Увеличиваем счетчик денег
         moneyElement.textContent = money; // Обновляем счетчик
         localStorage.setItem("money", money); // Сохраняем деньги
+
+        // Добавляем опыт
+        experience += amount;
+        if (experience >= experienceToNextLevel) {
+          level += 1;
+          experience = 0;
+          levelElement.textContent = `Ур. ${level}`;
+        }
+        updateProgressBar();
 
         // Анимация подпрыгивания для изображения
         crastyImg.style.animation = "jump 0.3s ease";
