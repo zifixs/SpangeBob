@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
   <head>
@@ -341,6 +340,56 @@
           transform: translateX(0) translateY(-50%);
         }
       }
+
+      /* Панель с наградами */
+      .reward-panel {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        z-index: 2000;
+        transition: transform 0.3s ease;
+      }
+
+      .reward-panel.active {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .reward-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .reward-item img {
+        width: 30px;
+        height: 30px;
+      }
+
+      .reward-item span {
+        color: white;
+        font-size: 16px;
+      }
+
+      .reward-item button {
+        background: #ffeb3b;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .reward-item button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
     </style>
   </head>
   <body oncontextmenu="return false;">
@@ -350,7 +399,7 @@
     </div>
 
     <!-- Кнопка с иконкой rew.png -->
-    <button class="rew-button">
+    <button class="rew-button" id="rew-button">
       <img src="rew.png" alt="Rew" />
     </button>
 
@@ -391,6 +440,12 @@
       <div class="wave"></div>
     </div>
 
+    <!-- Панель с наградами -->
+    <div class="reward-panel" id="reward-panel">
+      <h2 style="color: #ffeb3b; text-align: center">Daily Rewards</h2>
+      <div id="rewards-container"></div>
+    </div>
+
     <!-- Аудио для основной страницы -->
     <audio id="main-audio" autoplay loop style="display: none" volume="0.3">
       <source src="sdd.mp3" type="audio/mpeg" />
@@ -406,6 +461,9 @@
       let experience = parseInt(localStorage.getItem("experience")) || 0; // Загружаем сохраненный опыт
       const experienceToNextLevel = 100 + level * 50; // Опыт для следующего уровня увеличивается с уровнем
       let lastUpdateTime = parseInt(localStorage.getItem("lastUpdateTime")) || Date.now(); // Время последнего обновления энергии
+      let lastClickTime = 0; // Время последнего клика
+      let clickCount = 0; // Счетчик кликов
+      let rewards = JSON.parse(localStorage.getItem("rewards")) || Array(10).fill(false); // Награды за 10 дней
 
       const energyElement = document.getElementById("energy");
       const moneyElement = document.getElementById("money");
@@ -415,6 +473,9 @@
       const energyImg = document.getElementById("energy-img");
       const circle = document.querySelector(".spongebob-house");
       const mainAudio = document.getElementById("main-audio");
+      const rewButton = document.getElementById("rew-button");
+      const rewardPanel = document.getElementById("reward-panel");
+      const rewardsContainer = document.getElementById("rewards-container");
 
       // Восстановление энергии при загрузке страницы
       const currentTime = Date.now();
@@ -489,10 +550,39 @@
         levelProgressBar.style.width = `${progress}%`;
       }
 
+      // Функция для обнуления прогресса
+      function resetProgress() {
+        money = 0;
+        energy = 500;
+        level = 1;
+        experience = 0;
+        localStorage.setItem("money", money);
+        localStorage.setItem("energy", energy);
+        localStorage.setItem("level", level);
+        localStorage.setItem("experience", experience);
+        energyElement.textContent = `${energy}/500`;
+        moneyElement.textContent = money;
+        levelElement.textContent = `Ур. ${level}`;
+        updateProgressBar();
+        showNotification("You are using an auto-clicker. All progress has been reset.");
+      }
+
       // Обработчик клика на круг
       circle.addEventListener("click", () => {
+        const now = Date.now();
+        if (now - lastClickTime < 100) { // Если клики происходят слишком быстро
+          clickCount++;
+          if (clickCount > 5) { // Если больше 5 быстрых кликов
+            resetProgress();
+            return;
+          }
+        } else {
+          clickCount = 0;
+        }
+        lastClickTime = now;
+
         if (energy < 4) {
-          showNotification("Недостаточно энергии!");
+          showNotification("Not enough energy!");
           return;
         }
 
@@ -533,6 +623,49 @@
       circle.addEventListener("dblclick", (e) => {
         e.preventDefault();
       });
+
+      // Открытие панели с наградами
+      rewButton.addEventListener("click", () => {
+        rewardPanel.classList.toggle("active");
+        updateRewardsPanel();
+      });
+
+      // Обновление панели с наградами
+      function updateRewardsPanel() {
+        rewardsContainer.innerHTML = "";
+        rewards.forEach((claimed, index) => {
+          const rewardItem = document.createElement("div");
+          rewardItem.classList.add("reward-item");
+
+          const rewardImage = document.createElement("img");
+          rewardImage.src = "crasty.png";
+          rewardItem.appendChild(rewardImage);
+
+          const rewardText = document.createElement("span");
+          rewardText.textContent = `Day ${index + 1}: ${(index + 1) * 1000} money`;
+          rewardItem.appendChild(rewardText);
+
+          const claimButton = document.createElement("button");
+          claimButton.textContent = claimed ? "Claimed" : "Claim";
+          claimButton.disabled = claimed;
+          claimButton.addEventListener("click", () => {
+            if (!claimed) {
+              money += (index + 1) * 1000;
+              moneyElement.textContent = money;
+              localStorage.setItem("money", money);
+              rewards[index] = true;
+              localStorage.setItem("rewards", JSON.stringify(rewards));
+              updateRewardsPanel();
+            }
+          });
+          rewardItem.appendChild(claimButton);
+
+          rewardsContainer.appendChild(rewardItem);
+        });
+      }
+
+      // Инициализация панели с наградами
+      updateRewardsPanel();
     </script>
   </body>
 </html>
