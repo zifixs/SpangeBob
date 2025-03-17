@@ -2,7 +2,7 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>SpangeBob</title>
     <style>
       /* Убираем выделения и запрещаем копирование */
@@ -141,11 +141,11 @@
         font-weight: bold;
       }
 
-      /* Панель с уровнем (слева вверху, ниже панели с энергией) */
+      /* Панель с уровнем (справа внизу, выше нижней панели) */
       .level-panel {
         position: fixed;
-        left: 10px; /* Смещаем влево */
-        top: 130px; /* Опускаем ниже */
+        right: 10px; /* Смещаем вправо */
+        bottom: 80px; /* Выше нижней панели */
         background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
         padding: 10px;
         border-radius: 10px;
@@ -271,12 +271,13 @@
       }
 
       .bottom-panel button {
-        padding: 10px 20px;
-        font-size: 16px;
-        color: white;
+        width: 50px; /* Квадратные кнопки */
+        height: 50px;
+        padding: 0;
+        font-size: 0; /* Убираем текст */
         background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
         border: none;
-        border-radius: 10px; /* Закругленные углы */
+        border-radius: 15px; /* Закругленные углы */
         cursor: pointer;
         transition: background 0.3s ease;
       }
@@ -368,7 +369,7 @@
       <span id="money">0</span>
     </div>
 
-    <!-- Панель с уровнем (слева вверху, ниже панели с энергией) -->
+    <!-- Панель с уровнем (справа внизу, выше нижней панели) -->
     <div class="level-panel">
       <span id="level">Ур. 1</span>
       <div class="level-progress">
@@ -383,9 +384,9 @@
 
     <!-- Нижняя панель с кнопками -->
     <div class="bottom-panel">
-      <button>Кнопка 1</button>
-      <button>Кнопка 2</button>
-      <button>Кнопка 3</button>
+      <button></button>
+      <button></button>
+      <button></button>
     </div>
 
     <!-- Нижняя панель с эффектом океана -->
@@ -404,9 +405,9 @@
       // Переменные
       let money = parseInt(localStorage.getItem("money")) || 0; // Загружаем сохраненные деньги
       let energy = 500; // Начальная энергия
-      let level = 1; // Начальный уровень
-      let experience = 0; // Опыт
-      const experienceToNextLevel = 100; // Опыт для следующего уровня
+      let level = parseInt(localStorage.getItem("level")) || 1; // Загружаем сохраненный уровень
+      let experience = parseInt(localStorage.getItem("experience")) || 0; // Загружаем сохраненный опыт
+      const experienceToNextLevel = 100 + level * 50; // Опыт для следующего уровня увеличивается с уровнем
 
       const energyElement = document.getElementById("energy");
       const moneyElement = document.getElementById("money");
@@ -502,13 +503,15 @@
         moneyElement.textContent = money; // Обновляем счетчик
         localStorage.setItem("money", money); // Сохраняем деньги
 
-        // Добавляем опыт
-        experience += amount;
+        // Добавляем опыт (чем выше уровень, тем меньше опыта)
+        experience += Math.max(1, Math.floor(amount / level));
         if (experience >= experienceToNextLevel) {
           level += 1;
           experience = 0;
           levelElement.textContent = `Ур. ${level}`;
+          localStorage.setItem("level", level); // Сохраняем уровень
         }
+        localStorage.setItem("experience", experience); // Сохраняем опыт
         updateProgressBar();
 
         // Анимация подпрыгивания для изображения
@@ -521,6 +524,11 @@
       // Автовоспроизведение музыки
       document.addEventListener("click", () => {
         mainAudio.play();
+      });
+
+      // Запрет масштабирования при двойном клике
+      circle.addEventListener("dblclick", (e) => {
+        e.preventDefault();
       });
     </script>
   </body>
