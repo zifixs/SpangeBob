@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Дом Спанч Боба</title>
     <style>
+      /* Убираем выделения */
+      * {
+        user-select: none; /* Запрет выделения текста */
+        -webkit-tap-highlight-color: transparent; /* Убираем подсветку при касании на мобильных */
+      }
+
       /* Основные стили */
       body {
         margin: 0;
@@ -62,6 +68,20 @@
         height: 30px;
         border-radius: 50%;
         object-fit: cover;
+        transition: transform 0.2s ease; /* Анимация для изображения */
+      }
+
+      /* Анимация подпрыгивания */
+      @keyframes jump {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0);
+        }
       }
 
       .left-panel span {
@@ -162,7 +182,7 @@
 
     <!-- Панель слева -->
     <div class="left-panel">
-      <img src="crasty.png" alt="Crasty" />
+      <img src="crasty.png" alt="Crasty" id="crasty-img" />
       <span id="money">0</span>
     </div>
 
@@ -180,8 +200,12 @@
 
     <script>
       // Переменные
-      let money = 0;
+      let money = parseInt(localStorage.getItem("money")) || 0; // Загружаем сохраненные деньги
       const moneyElement = document.getElementById("money");
+      const crastyImg = document.getElementById("crasty-img");
+
+      // Обновляем счетчик при загрузке страницы
+      moneyElement.textContent = money;
 
       // Автовоспроизведение музыки для всех браузеров
       document.addEventListener(
@@ -231,6 +255,12 @@
       circle.addEventListener("click", () => {
         money += 1; // Увеличиваем счетчик денег
         moneyElement.textContent = money; // Обновляем счетчик
+        localStorage.setItem("money", money); // Сохраняем деньги
+
+        // Анимация подпрыгивания для изображения
+        crastyImg.style.animation = "jump 0.3s ease";
+        setTimeout(() => (crastyImg.style.animation = ""), 300); // Сбрасываем анимацию
+
         createCrasty(); // Создаем одну фотку при каждом клике
       });
     </script>
