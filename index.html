@@ -53,7 +53,29 @@
         text-align: center; /* Выравниваем текст по центру */
       }
 
-      /* Панель с энергией (справа вверху, как панель с деньгами) */
+      /* Кнопка с иконкой rew.png */
+      .rew-button {
+        position: fixed;
+        top: 70px; /* Чуть ниже верхней панели */
+        left: 10px; /* Слева */
+        background: none; /* Без фона */
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        z-index: 1000;
+      }
+
+      .rew-button img {
+        width: 40px; /* Размер иконки */
+        height: 40px;
+        transition: transform 0.3s ease; /* Анимация при наведении */
+      }
+
+      .rew-button:hover img {
+        transform: scale(1.1); /* Увеличение при наведении */
+      }
+
+      /* Панель с энергией (справа вверху) */
       .energy-panel {
         position: fixed;
         right: 10px; /* Смещаем вправо */
@@ -85,7 +107,7 @@
       .money-panel {
         position: fixed;
         right: 10px; /* Смещаем вправо */
-        top: 120px; /* Опускаем ниже */
+        top: 130px; /* Опускаем ниже */
         background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
         padding: 10px;
         border-radius: 10px;
@@ -171,6 +193,7 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+        pointer-events: none; /* Запрет перетаскивания */
       }
 
       /* Анимация при клике */
@@ -324,6 +347,11 @@
     <div class="panel">
       <h1>Spange Bob</h1> <!-- Изменено на "Spange" -->
     </div>
+
+    <!-- Кнопка с иконкой rew.png -->
+    <button class="rew-button">
+      <img src="rew.png" alt="Rew" />
+    </button>
 
     <!-- Панель с энергией (справа вверху) -->
     <div class="energy-panel">
