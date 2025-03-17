@@ -53,45 +53,26 @@
         text-align: center; /* Выравниваем текст по центру */
       }
 
-      /* Панель с энергией (слева вверху, напротив панели с деньгами) */
+      /* Панель с энергией (справа вверху, как панель с деньгами) */
       .energy-panel {
         position: fixed;
-        left: 10px; /* Смещаем влево */
+        right: 10px; /* Смещаем вправо */
         top: 70px; /* Опускаем ниже */
         background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
         padding: 10px;
         border-radius: 10px;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 5px;
         z-index: 1000;
       }
 
       .energy-panel img {
-        width: 40px; /* Увеличенный размер изображения */
-        height: 40px;
+        width: 30px; /* Уменьшенный размер изображения */
+        height: 30px;
         border-radius: 50%;
         object-fit: cover;
-        transition: transform 0.3s ease; /* Анимация для изображения */
-      }
-
-      /* Анимация при трате энергии */
-      @keyframes energyShake {
-        0% {
-          transform: translateX(0);
-        }
-        25% {
-          transform: translateX(-5px);
-        }
-        50% {
-          transform: translateX(5px);
-        }
-        75% {
-          transform: translateX(-5px);
-        }
-        100% {
-          transform: translateX(0);
-        }
+        transition: transform 0.2s ease; /* Анимация для изображения */
       }
 
       .energy-panel span {
@@ -104,7 +85,7 @@
       .money-panel {
         position: fixed;
         right: 10px; /* Смещаем вправо */
-        top: 70px; /* Опускаем ниже */
+        top: 120px; /* Опускаем ниже */
         background: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
         padding: 10px;
         border-radius: 10px;
@@ -120,19 +101,6 @@
         border-radius: 50%;
         object-fit: cover;
         transition: transform 0.2s ease; /* Анимация для изображения */
-      }
-
-      /* Анимация подпрыгивания */
-      @keyframes jump {
-        0% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-10px);
-        }
-        100% {
-          transform: translateY(0);
-        }
       }
 
       .money-panel span {
@@ -357,7 +325,7 @@
       <h1>Spange Bob</h1> <!-- Изменено на "Spange" -->
     </div>
 
-    <!-- Панель с энергией (слева вверху, напротив панели с деньгами) -->
+    <!-- Панель с энергией (справа вверху) -->
     <div class="energy-panel">
       <img src="energy.png" alt="Energy" id="energy-img" />
       <span id="energy">500/500</span>
@@ -404,10 +372,11 @@
     <script>
       // Переменные
       let money = parseInt(localStorage.getItem("money")) || 0; // Загружаем сохраненные деньги
-      let energy = 500; // Начальная энергия
+      let energy = parseInt(localStorage.getItem("energy")) || 500; // Загружаем сохраненную энергию
       let level = parseInt(localStorage.getItem("level")) || 1; // Загружаем сохраненный уровень
       let experience = parseInt(localStorage.getItem("experience")) || 0; // Загружаем сохраненный опыт
       const experienceToNextLevel = 100 + level * 50; // Опыт для следующего уровня увеличивается с уровнем
+      let lastUpdateTime = parseInt(localStorage.getItem("lastUpdateTime")) || Date.now(); // Время последнего обновления энергии
 
       const energyElement = document.getElementById("energy");
       const moneyElement = document.getElementById("money");
@@ -417,6 +386,13 @@
       const energyImg = document.getElementById("energy-img");
       const circle = document.querySelector(".spongebob-house");
       const mainAudio = document.getElementById("main-audio");
+
+      // Восстановление энергии при загрузке страницы
+      const currentTime = Date.now();
+      const timeDiff = Math.floor((currentTime - lastUpdateTime) / 1000); // Разница в секундах
+      energy = Math.min(500, energy + timeDiff); // Восстанавливаем энергию
+      localStorage.setItem("energy", energy);
+      localStorage.setItem("lastUpdateTime", currentTime);
 
       // Обновляем счетчики при загрузке страницы
       energyElement.textContent = `${energy}/500`;
@@ -429,6 +405,8 @@
         if (energy < 500) {
           energy += 1;
           energyElement.textContent = `${energy}/500`;
+          localStorage.setItem("energy", energy);
+          localStorage.setItem("lastUpdateTime", Date.now());
         }
       }, 1000);
 
@@ -484,18 +462,14 @@
 
       // Обработчик клика на круг
       circle.addEventListener("click", () => {
-        if (energy <= 0) {
-          showNotification("No energy, please wait!");
+        if (energy < 4) {
+          showNotification("Недостаточно энергии!");
           return;
         }
 
         energy -= 4; // Уменьшаем энергию на 4
-        if (energy < 0) energy = 0; // Не даем энергии уйти в минус
         energyElement.textContent = `${energy}/500`;
-
-        // Анимация для фотки энергии
-        energyImg.style.animation = "energyShake 0.3s ease";
-        setTimeout(() => (energyImg.style.animation = ""), 300); // Сбрасываем анимацию
+        localStorage.setItem("energy", energy);
 
         const random = Math.random(); // Случайное число от 0 до 1
         const amount = random < 0.1 ? 5 : 1; // 10% шанс получить +5, иначе +1
