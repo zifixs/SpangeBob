@@ -504,22 +504,80 @@
         transition: transform 0.3s ease;
         width: 90%;
         max-width: 400px;
+        box-shadow: 0 0 20px rgba(255, 235, 59, 0.5);
       }
 
       .casino-panel.active {
         transform: translate(-50%, -50%) scale(1);
       }
 
-      .casino-panel img {
-        width: 100%;
-        max-width: 300px;
+      .slot-machine {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 235, 59, 0.1);
+        padding: 20px;
+        border-radius: 15px;
+        border: 2px solid #ffeb3b;
+        position: relative;
+      }
+
+      .slots {
+        display: flex;
+        gap: 10px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 10px;
         border-radius: 10px;
       }
 
-      .casino-panel button {
+      .slot-reel {
+        width: 60px;
+        height: 120px;
+        overflow: hidden;
+        position: relative;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        border: 2px solid #ffeb3b;
+      }
+
+      .slot-item {
+        width: 100%;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        color: #ffeb3b;
+        background: rgba(0, 0, 0, 0.6);
+        border-bottom: 1px solid rgba(255, 235, 59, 0.2);
+      }
+
+      .lever {
+        width: 50px;
+        height: 100px;
+        background: #ffeb3b;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .lever img {
+        width: 30px;
+        height: 30px;
+      }
+
+      .lever:active {
+        transform: rotate(-30deg);
+      }
+
+      #play-button {
         background: #ffeb3b;
         border: none;
-        padding: 8px 16px;
+        padding: 10px 20px;
         border-radius: 5px;
         cursor: pointer;
         font-weight: bold;
@@ -527,23 +585,9 @@
         transition: background 0.3s ease;
       }
 
-      .casino-panel button:disabled {
+      #play-button:disabled {
         background: #ccc;
         cursor: not-allowed;
-      }
-
-      .casino-panel .lever {
-        width: 50px;
-        height: 100px;
-        background: #ffeb3b;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: transform 0.3s ease;
-        margin-top: 10px;
-      }
-
-      .casino-panel .lever:active {
-        transform: rotate(-30deg);
       }
     </style>
   </head>
@@ -613,8 +657,40 @@
     <!-- Игровой аппарат -->
     <div class="casino-panel" id="casino-panel">
       <h2 style="color: #ffeb3b; text-align: center">Casino</h2>
-      <img src="casino-machine.png" alt="Casino Machine" />
-      <div class="lever" id="lever"></div>
+      <div class="slot-machine">
+        <div class="slots">
+          <div class="slot-reel" id="reel1">
+            <div class="slot-item">🍒</div>
+            <div class="slot-item">🍋</div>
+            <div class="slot-item">🍇</div>
+            <div class="slot-item">🍉</div>
+            <div class="slot-item">🔔</div>
+            <div class="slot-item">⭐</div>
+            <div class="slot-item">7️⃣</div>
+          </div>
+          <div class="slot-reel" id="reel2">
+            <div class="slot-item">🍒</div>
+            <div class="slot-item">🍋</div>
+            <div class="slot-item">🍇</div>
+            <div class="slot-item">🍉</div>
+            <div class="slot-item">🔔</div>
+            <div class="slot-item">⭐</div>
+            <div class="slot-item">7️⃣</div>
+          </div>
+          <div class="slot-reel" id="reel3">
+            <div class="slot-item">🍒</div>
+            <div class="slot-item">🍋</div>
+            <div class="slot-item">🍇</div>
+            <div class="slot-item">🍉</div>
+            <div class="slot-item">🔔</div>
+            <div class="slot-item">⭐</div>
+            <div class="slot-item">7️⃣</div>
+          </div>
+        </div>
+        <div class="lever" id="lever">
+          <img src="lever.png" alt="Lever" />
+        </div>
+      </div>
       <button id="play-button">Play (20,000 money)</button>
     </div>
 
@@ -654,6 +730,9 @@
       const casinoPanel = document.getElementById("casino-panel");
       const lever = document.getElementById("lever");
       const playButton = document.getElementById("play-button");
+      const reel1 = document.getElementById("reel1");
+      const reel2 = document.getElementById("reel2");
+      const reel3 = document.getElementById("reel3");
 
       // Восстановление энергии при загрузке страницы
       const currentTime = Date.now();
@@ -836,16 +915,30 @@
         moneyElement.textContent = money;
         localStorage.setItem("money", money);
 
-        const random = Math.random();
-        const winAmount = random < 0.5 ? 0 : Math.floor(Math.random() * 50000); // 50% шанс выиграть от 0 до 50,000
-        if (winAmount > 0) {
-          money += winAmount;
-          moneyElement.textContent = money;
-          localStorage.setItem("money", money);
-          showNotification(`You won ${winAmount} money!`);
-        } else {
-          showNotification("You didn't win anything. Try again!");
-        }
+        // Анимация барабанов
+        const spinReel = (reel, duration) => {
+          const items = reel.querySelectorAll(".slot-item");
+          const randomOffset = Math.floor(Math.random() * items.length);
+          reel.style.transition = `transform ${duration}ms ease-out`;
+          reel.style.transform = `translateY(-${randomOffset * 40}px)`;
+        };
+
+        spinReel(reel1, 1000);
+        spinReel(reel2, 1200);
+        spinReel(reel3, 1400);
+
+        setTimeout(() => {
+          const random = Math.random();
+          const winAmount = random < 0.5 ? 0 : Math.floor(Math.random() * 50000); // 50% шанс выиграть от 0 до 50,000
+          if (winAmount > 0) {
+            money += winAmount;
+            moneyElement.textContent = money;
+            localStorage.setItem("money", money);
+            showNotification(`You won ${winAmount} money!`);
+          } else {
+            showNotification("You didn't win anything. Try again!");
+          }
+        }, 1500);
       });
 
       // Обновление панели с наградами
