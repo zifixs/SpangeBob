@@ -352,10 +352,27 @@
         transition: transform 0.3s ease;
         width: 90%;
         max-width: 400px;
+        max-height: 80vh;
+        overflow-y: auto;
       }
 
       .reward-panel.active {
         transform: translate(-50%, -50%) scale(1);
+      }
+
+      /* Кастомный скроллбар */
+      .reward-panel::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .reward-panel::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+      }
+
+      .reward-panel::-webkit-scrollbar-thumb {
+        background: #ffeb3b;
+        border-radius: 4px;
       }
 
       .rewards-grid {
@@ -416,6 +433,28 @@
         grid-column: 2 / 3;
         margin-top: 10px;
       }
+
+      /* Кнопка закрытия наград */
+      .leave-button {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        z-index: 1000;
+      }
+
+      .leave-button img {
+        width: 30px; /* Размер кнопки */
+        height: 30px;
+        transition: transform 0.3s ease;
+      }
+
+      .leave-button:hover img {
+        transform: scale(1.1);
+      }
     </style>
   </head>
   <body oncontextmenu="return false;">
@@ -470,6 +509,10 @@
     <div class="reward-panel" id="reward-panel">
       <h2 style="color: #ffeb3b; text-align: center">Daily Rewards</h2>
       <div class="rewards-grid" id="rewards-container"></div>
+      <!-- Кнопка закрытия наград -->
+      <button class="leave-button" id="leave-button">
+        <img src="leave.png" alt="Leave" />
+      </button>
     </div>
 
     <!-- Аудио для основной страницы -->
@@ -503,6 +546,7 @@
       const rewButton = document.getElementById("rew-button");
       const rewardPanel = document.getElementById("reward-panel");
       const rewardsContainer = document.getElementById("rewards-container");
+      const leaveButton = document.getElementById("leave-button");
 
       // Восстановление энергии при загрузке страницы
       const currentTime = Date.now();
@@ -652,9 +696,14 @@
 
       // Закрытие панели с наградами по клику вне ее
       document.addEventListener("click", (e) => {
-        if (!rewardPanel.contains(e.target) && !rewButton.contains(e.target)) {
+        if (!rewardPanel.contains(e.target) && !rewButton.contains(e.target) && !leaveButton.contains(e.target)) {
           rewardPanel.classList.remove("active");
         }
+      });
+
+      // Закрытие панели с наградами по кнопке leave
+      leaveButton.addEventListener("click", () => {
+        rewardPanel.classList.remove("active");
       });
 
       // Обновление панели с наградами
