@@ -74,6 +74,28 @@
         transform: scale(1.1);
       }
 
+      /* Кнопка с иконкой cas.png */
+      .cas-button {
+        position: fixed;
+        top: 120px; /* Ниже кнопки rew */
+        left: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        z-index: 1000;
+      }
+
+      .cas-button img {
+        width: 40px;
+        height: 40px;
+        transition: transform 0.3s ease;
+      }
+
+      .cas-button:hover img {
+        transform: scale(1.1);
+      }
+
       /* Панель с энергией (справа вверху) */
       .energy-panel {
         position: fixed;
@@ -464,6 +486,65 @@
       .leave-button:hover img {
         transform: scale(1.1);
       }
+
+      /* Игровой аппарат */
+      .casino-panel {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: rgba(0, 0, 0, 0.9);
+        padding: 20px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        z-index: 2000;
+        transition: transform 0.3s ease;
+        width: 90%;
+        max-width: 400px;
+      }
+
+      .casino-panel.active {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .casino-panel img {
+        width: 100%;
+        max-width: 300px;
+        border-radius: 10px;
+      }
+
+      .casino-panel button {
+        background: #ffeb3b;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #000;
+        transition: background 0.3s ease;
+      }
+
+      .casino-panel button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+
+      .casino-panel .lever {
+        width: 50px;
+        height: 100px;
+        background: #ffeb3b;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        margin-top: 10px;
+      }
+
+      .casino-panel .lever:active {
+        transform: rotate(-30deg);
+      }
     </style>
   </head>
   <body oncontextmenu="return false;">
@@ -475,6 +556,11 @@
     <!-- Кнопка с иконкой rew.png -->
     <button class="rew-button" id="rew-button">
       <img src="rew.png" alt="Rew" />
+    </button>
+
+    <!-- Кнопка с иконкой cas.png -->
+    <button class="cas-button" id="cas-button">
+      <img src="cas.png" alt="Casino" />
     </button>
 
     <!-- Панель с энергией (справа вверху) -->
@@ -524,6 +610,14 @@
       </button>
     </div>
 
+    <!-- Игровой аппарат -->
+    <div class="casino-panel" id="casino-panel">
+      <h2 style="color: #ffeb3b; text-align: center">Casino</h2>
+      <img src="casino-machine.png" alt="Casino Machine" />
+      <div class="lever" id="lever"></div>
+      <button id="play-button">Play (20,000 money)</button>
+    </div>
+
     <!-- Аудио для основной страницы -->
     <audio id="main-audio" autoplay loop style="display: none" volume="0.2">
       <source src="sdd.mp3" type="audio/mpeg" />
@@ -556,6 +650,10 @@
       const rewardPanel = document.getElementById("reward-panel");
       const rewardsContainer = document.getElementById("rewards-container");
       const leaveButton = document.getElementById("leave-button");
+      const casButton = document.getElementById("cas-button");
+      const casinoPanel = document.getElementById("casino-panel");
+      const lever = document.getElementById("lever");
+      const playButton = document.getElementById("play-button");
 
       // Восстановление энергии при загрузке страницы
       const currentTime = Date.now();
@@ -713,6 +811,41 @@
       // Закрытие панели с наградами по кнопке leave
       leaveButton.addEventListener("click", () => {
         rewardPanel.classList.remove("active");
+      });
+
+      // Открытие игрового аппарата
+      casButton.addEventListener("click", () => {
+        casinoPanel.classList.toggle("active");
+      });
+
+      // Закрытие игрового аппарата по клику вне его
+      document.addEventListener("click", (e) => {
+        if (!casinoPanel.contains(e.target) && !casButton.contains(e.target)) {
+          casinoPanel.classList.remove("active");
+        }
+      });
+
+      // Игровой аппарат: дергаем рычаг
+      lever.addEventListener("click", () => {
+        if (money < 20000) {
+          showNotification("Not enough money! You need 20,000.");
+          return;
+        }
+
+        money -= 20000;
+        moneyElement.textContent = money;
+        localStorage.setItem("money", money);
+
+        const random = Math.random();
+        const winAmount = random < 0.5 ? 0 : Math.floor(Math.random() * 50000); // 50% шанс выиграть от 0 до 50,000
+        if (winAmount > 0) {
+          money += winAmount;
+          moneyElement.textContent = money;
+          localStorage.setItem("money", money);
+          showNotification(`You won ${winAmount} money!`);
+        } else {
+          showNotification("You didn't win anything. Try again!");
+        }
       });
 
       // Обновление панели с наградами
